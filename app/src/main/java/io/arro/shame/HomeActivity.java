@@ -1,5 +1,6 @@
 package io.arro.shame;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,16 +17,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -52,6 +51,23 @@ public class HomeActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, toppings);
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(adapter);
+        
+        goals.add(new Goal());
+        Goal g = new Goal();
+        g.endDate = new Date(123l);
+        g.title = "WOOP";
+        g.status = Goal.COMPLETED;
+        goals.add(g);
+
+        saveGoals(goals);
+        ArrayList<Goal> otherGoals = loadGoals();
+        for (Goal g1 : goals) {
+            System.out.println(g1.toString());
+        }
+        System.out.println("SAIL");
+        for (Goal g1 : otherGoals) {
+            System.out.println(g1.toString());
+        }
     }
 
     @Override
@@ -78,12 +94,22 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
-        Collections.sort(goals, new GoalComparator());
+        //Collections.sort(goals, new GoalComparator());
     }
 
     public ArrayList<Goal> loadGoals() {
         try {
-            JSONArray jray = new JSONArray(getStringFromFile("data.json"));
+            FileInputStream in = openFileInput("data.json");
+            InputStreamReader inputStreamReader = new InputStreamReader(in);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+
+
+            JSONArray jray = new JSONArray(sb.toString());
             ArrayList<Goal> g = new ArrayList<Goal>();
             for (int i = 0; i < jray.length(); i++) {
                 g.add(new Goal((JSONObject) jray.get(i)));
@@ -91,8 +117,7 @@ public class HomeActivity extends AppCompatActivity {
             return g;
 
         } catch (FileNotFoundException e) {
-            saveGoals();
-            return new ArrayList<Goal>();
+            e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -102,47 +127,23 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        saveGoals(new ArrayList<Goal>());
         return new ArrayList<Goal>();
     }
 
-    public void saveGoals() {
+    public void saveGoals(ArrayList<Goal> goals) {
         try {
-
-            String save = "data.json";
-            PrintWriter pw = new PrintWriter(save);
+            FileOutputStream fos = openFileOutput("data.json", Context.MODE_PRIVATE);
 
             JSONArray jray = new JSONArray();
             for (Goal i : goals)
                 jray.put(i.save());
 
-            pw.write(jray.toString());
-            pw.flush();
-            pw.close();
+            fos.write(jray.toString().getBytes());
+            fos.close();
 
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-    public static String getStringFromFile(String filePath) throws Exception {
-        File fl = new File(filePath);
-        FileInputStream fin = new FileInputStream(fl);
-        String ret = convertStreamToString(fin);
-        //Make sure you close all streams.
-        fin.close();
-        return ret;
-    }
-
-    public static String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        reader.close();
-        return sb.toString();
-    }
-
 }
