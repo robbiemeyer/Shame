@@ -3,6 +3,7 @@ package io.arro.shame;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -10,16 +11,16 @@ import java.util.Date;
  */
 
 public class Goal implements Saveable {
-    Date endDate;
+    public final static int COMPLETED = 1;
+    public final static int In_PROGRESS = 0;
+    public final static int FAILED = -1;
+
+    Date endDate = new Date();
     String title = "New Goal";
     String goal = "";
 
 
-    public enum Status {
-        COMPLETED, FAILED, IN_PROGRESS
-    }
-
-    Status status = Status.IN_PROGRESS;
+    int status = 0;
 
     public Goal() {
 
@@ -36,11 +37,13 @@ public class Goal implements Saveable {
     @Override
     public void load(JSONObject o) {
         try {
-            endDate = (Date) o.get("endDate");
+            endDate = Public_Values.getInstance().dt.parse((String) o.get("endDate"));
             title = (String) o.get("title");
             goal = (String) o.get("goal");
-            status = (Status) o.get("status");
+            status = (int) o.get("status");
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -49,7 +52,7 @@ public class Goal implements Saveable {
     public JSONObject save() {
         JSONObject o = new JSONObject();
         try {
-            o.put("endDate", endDate);
+            o.put("endDate", Public_Values.getInstance().dt.format(endDate));
             o.put("title", title);
             o.put("goal", goal);
             o.put("status", status);
