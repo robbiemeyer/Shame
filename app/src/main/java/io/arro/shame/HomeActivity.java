@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -45,12 +46,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        String[] toppings = {"Cheese", "Pepperoni", "Black Olives"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, toppings);
-        ListView listView = (ListView) findViewById(R.id.home_list);
-        listView.setAdapter(adapter);
-       
+
     }
 
     @Override
@@ -77,7 +73,17 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
-        //Collections.sort(goals, new GoalComparator());
+        Collections.sort(goals, new GoalComparator());
+
+        String[] goalTitles = new String[goals.size()];
+        for (int i = 0; i < goals.size(); i++) {
+            goalTitles[i] = goals.get(i).title;
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, goalTitles);
+        ListView listView = (ListView) findViewById(R.id.home_list);
+        listView.setAdapter(adapter);
     }
 
     public ArrayList<Goal> loadGoals() {
