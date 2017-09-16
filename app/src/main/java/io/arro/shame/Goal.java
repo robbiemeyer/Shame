@@ -29,6 +29,10 @@ public class Goal implements Saveable {
         load(o);
     }
 
+    public Date getNextEventDate() {
+        return endDate;
+    }
+
     @Override
     public void load(JSONObject o) {
         try {
@@ -54,6 +58,10 @@ public class Goal implements Saveable {
         }
 
         return o;
+    }
+
+    public String toString() {
+        return save().toString();
     }
 
 }
