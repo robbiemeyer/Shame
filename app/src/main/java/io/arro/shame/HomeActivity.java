@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -51,23 +50,7 @@ public class HomeActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, toppings);
         ListView listView = (ListView) findViewById(R.id.home_list);
         listView.setAdapter(adapter);
-        
-        goals.add(new Goal());
-        Goal g = new Goal();
-        g.endDate = new Date(123l);
-        g.title = "WOOP";
-        g.status = Goal.COMPLETED;
-        goals.add(g);
-
-        saveGoals(goals);
-        ArrayList<Goal> otherGoals = loadGoals();
-        for (Goal g1 : goals) {
-            System.out.println(g1.toString());
-        }
-        System.out.println("SAIL");
-        for (Goal g1 : otherGoals) {
-            System.out.println(g1.toString());
-        }
+       
     }
 
     @Override
