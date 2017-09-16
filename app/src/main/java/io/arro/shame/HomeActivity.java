@@ -46,6 +46,8 @@ public class HomeActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
             //qq
+            //qq
+                
         }
 
         return super.onOptionsItemSelected(item);
