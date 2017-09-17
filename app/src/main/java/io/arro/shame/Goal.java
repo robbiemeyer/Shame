@@ -21,10 +21,17 @@ public class Goal implements Saveable {
 
 
     int status = 0;
-    
+
     public Goal() {
 
     }
+
+    public Goal(String title, Date date, String goal) {
+        this.title = title;
+        this.endDate = date;
+        this.goal = goal;
+    }
+
 
     public Goal(JSONObject o) {
         load(o);
