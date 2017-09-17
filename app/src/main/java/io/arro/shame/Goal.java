@@ -21,7 +21,7 @@ public class Goal implements Saveable {
 
 
     int status = 0;
-
+    
     public Goal() {
 
     }
